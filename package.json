@@ -1,7 +1,7 @@
 {
   "name": "@picabia/demo-viewport-scaling",
   "version": "0.1.0",
-  "description": "Exploring ",
+  "description": "Picabia Demo: Viewport Scaling",
   "license": "MIT",
   "homepage": "https://github.com/andrezero/@picabia/demo-viewport-scaling",
   "author": "Andre Torgal <andre.torgal@gmail.com>",
@@ -18,7 +18,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@picabia/picabia": "^0.0.1"
+    "@picabia/picabia": "^0.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
