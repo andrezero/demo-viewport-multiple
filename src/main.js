@@ -1,4 +1,4 @@
-import { style } from './styles/style.css';
+import { style } from './styles/style.css'; // eslint-disable-line no-unused-vars
 import { Application } from './application';
 
 const init = () => {

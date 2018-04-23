@@ -3,8 +3,6 @@ import { Canvas, Frame, Node, Viewport, KeyboardInput } from '@picabia/picabia';
 import { GameModel } from './model/game';
 import { GameView } from './view/game';
 
-import style from './styles/style.css';
-
 class Application {
   constructor (container) {
     this._container = container;
@@ -19,19 +17,24 @@ class Application {
     // -- view
 
     const canvasOptions = {
-      mode: 'cover',
-      ratio: 2,
+      mode: 'contain',
+      ratio: 1,
       scaleAxis: 'width',
-      maxPixels: 1200 * 1200
+      maxPixels: 1000 * 1000
     };
     this._canvas = new Canvas(this._container, canvasOptions);
 
     this._viewport = new Viewport();
     this._view = new GameView(this._model, this._canvas, this._viewport);
 
+    this._viewport.setScale(0.5);
+    this._viewport.setZoom(2);
+    this._viewport.setPos({ x: 100, y: 100 });
+    this._viewport.setAngle(Math.PI / 4);
+
     this._canvas.on('resize', () => {
       this._viewport.setSize({ w: this._canvas.width, h: this._canvas.height });
-      this._viewport.setScale(this._canvas.width / 1000);
+      // this._viewport.setScale(this._canvas.height / 1000);
     });
 
     // -- input

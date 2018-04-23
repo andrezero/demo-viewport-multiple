@@ -1,5 +1,3 @@
-import { Time } from '@picabia/picabia';
-
 class PlayerView {
   constructor (player) {
     this._player = player;
@@ -8,9 +6,6 @@ class PlayerView {
   // -- public
 
   render (layer, delta, timestamp) {
-    const pos = this._player._pos;
-    const size = this._player._size;
-
     const red = 100;
     const green = 10;
     const blue = 10;

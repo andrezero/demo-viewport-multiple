@@ -1,6 +1,5 @@
 import { Emitter, Geometry } from '@picabia/picabia';
 
-const MAX_SPEED = 1;
 const MOVE_INCREMENT = 0.001;
 const STOP_INCREMENT = 0.002;
 const DASH_INCREMENT = 0.003;
@@ -10,9 +9,10 @@ const MAX_DASH_SPEED = 0.5;
 
 class PlayerModel {
   constructor () {
-    this._pos = { x: 0, y: 0 };
+    this._pos = { x: 100, y: 100 };
     this._dir = 0;
     this._speed = 0;
+
     this._shape = [{ x: -50, y: -50 }, { x: 50, y: -50 }, { x: 50, y: 50 }, { x: -50, y: 50 }];
 
     this._moveSpeed = 0;
@@ -65,8 +65,14 @@ class PlayerModel {
 
   // -- AppObject API
 
-  update (delta) {
+  update (delta, timestamp) {
     const dir = Geometry.radiansToVector(this._dir);
+
+    // if (!this._generateN) {
+    //   this._generateN = Time.waveCosine(timestamp, 1, 0.2, 5000);
+    // }
+    // const n = this._generateN(timestamp);
+    // this._shape = [{ x: -50 * n, y: -50 * n }, { x: 50 * n, y: -50 * n }, { x: 50 * n, y: 50 * n }, { x: -50 * n, y: 50 * n }];
 
     if (this._moving) {
       this._moveSpeed += delta * MOVE_INCREMENT;

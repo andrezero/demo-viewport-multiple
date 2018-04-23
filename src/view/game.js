@@ -1,4 +1,3 @@
-import { Time } from '@picabia/picabia';
 import { PlayerView } from './player';
 
 class GameView {
@@ -25,6 +24,18 @@ class GameView {
 
   render (layer, delta, timestamp) {
     this._layer.clear();
+
+    this._viewport.setPos({ x: this._viewport._pos.x - 1, y: this._viewport._pos.y - 1 });
+    this._viewport.setAngle(this._viewport._angle + 0.005);
+    this._viewport.setZoom(this._viewport._zoom + 0.01);
+
+    layer.setStrokeStyle('rgba(0,0,0,1)');
+    layer.setStrokeWidth(50);
+    layer.beginPath();
+    const shape = this._viewport.getShape();
+    shape.forEach(vector => layer.lineTo(vector.x, vector.y));
+    layer.lineTo(shape[0].x, shape[0].y);
+    layer.stroke();
   }
 }
 
