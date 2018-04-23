@@ -11,12 +11,12 @@ class Application {
 
     Node.mixin(this);
 
-    // model
+    // -- model
 
     this._model = new GameModel();
     this._player = null;
 
-    // view
+    // -- view
 
     const canvasOptions = {
       mode: 'cover',
@@ -28,6 +28,13 @@ class Application {
 
     this._viewport = new Viewport();
     this._view = new GameView(this._model, this._canvas, this._viewport);
+
+    this._canvas.on('resize', () => {
+      this._viewport.setSize({ w: this._canvas.width, h: this._canvas.height });
+      this._viewport.setScale(this._canvas.width / 1000);
+    });
+
+    // -- input
 
     this._keyboard = new KeyboardInput();
     this._keyboard.addGroup('move', {
@@ -79,15 +86,6 @@ class Application {
 
   resize () {
     this._canvas.resize();
-    const size = {
-      w: 1000 * this._canvas.ratio,
-      h: 1000
-    };
-    this._viewport.setSize(size);
-    this._viewport.setScale(this._canvas.height / 1000);
-    if (this._update) {
-      this._update();
-    }
   }
 }
 

@@ -3,11 +3,6 @@ import { Time } from '@picabia/picabia';
 class PlayerView {
   constructor (player) {
     this._player = player;
-
-    this._log = Time.throttle(() => {
-      console.log('player view render', this._player._pos);
-      console.log('player view render', this._player._shape.map((vector) => ({ x: vector.x + this._player._pos.x, y: vector.y + this._player._pos.y })));
-    }, 5000);
   }
 
   // -- public
@@ -28,8 +23,6 @@ class PlayerView {
     layer.beginPath();
     polygon.forEach(vector => layer.lineTo(vector.x, vector.y));
     layer.fill();
-
-    this._log(delta, timestamp);
   }
 }
 

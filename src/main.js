@@ -1,5 +1,5 @@
 import { style } from './styles/style.css';
-import { Application } from './Application';
+import { Application } from './application';
 
 const init = () => {
   const parentElement = document.getElementById('app-container');

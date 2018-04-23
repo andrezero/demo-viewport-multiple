@@ -1,3 +1,4 @@
+import { Time } from '@picabia/picabia';
 import { PlayerView } from './player';
 
 class GameView {
@@ -14,21 +15,15 @@ class GameView {
 
     this._pos = [];
 
-    this._handlePlayerMove = (player) => {
-      const newAngle = viewport._angle + 0.001;
-      viewport.setAngle(newAngle);
-    };
-
     this._handleNewPlayer = (player) => {
       this._playerView = new PlayerView(player, this._layer);
       this._layer.addView(this._playerView);
-      player.on('move', this._handlePlayerMove);
     };
 
     this._model.on('new-player', this._handleNewPlayer);
   }
 
-  render () {
+  render (layer, delta, timestamp) {
     this._layer.clear();
   }
 }
