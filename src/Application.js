@@ -7,8 +7,6 @@ class Application {
   constructor (container) {
     this._container = container;
 
-    Node.mixin(this);
-
     // -- model
 
     this._model = new GameModel();
@@ -54,6 +52,8 @@ class Application {
 
     this._model.on('new-player', (player) => (this._player = player));
 
+    // @todo send all to game
+    // this._keyboard.on('control', (control) => this._model.input(control));
     this._keyboard.on('move:up', () => this._player.setDirection(0, -1));
     this._keyboard.on('move:down', () => this._player.setDirection(0, 1));
     this._keyboard.on('move:left', () => this._player.setDirection(-1, 0));
@@ -81,8 +81,6 @@ class Application {
     this._frame.on('update', (delta, timestamp) => this._model.update(delta, timestamp));
     this._frame.on('update', (delta, timestamp) => this._canvas.render(delta, timestamp));
     this._frame.start();
-
-    this._model.start();
   }
 
   resize () {

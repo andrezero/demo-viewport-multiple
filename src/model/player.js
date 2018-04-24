@@ -1,4 +1,4 @@
-import { Emitter, Geometry } from '@picabia/picabia';
+import { Model, Emitter, Time, Geometry } from '@picabia/picabia';
 
 const MOVE_INCREMENT = 0.001;
 const STOP_INCREMENT = 0.002;
@@ -7,13 +7,15 @@ const SLOW_INCREMENT = 0.001;
 const MAX_MOVE_SPEED = 0.5;
 const MAX_DASH_SPEED = 0.5;
 
-class PlayerModel {
+class PlayerModel extends Model {
   constructor () {
+    super();
     this._pos = { x: 100, y: 100 };
     this._dir = 0;
+    this._facing = 0;
     this._speed = 0;
 
-    this._shape = [{ x: -50, y: -50 }, { x: 50, y: -50 }, { x: 50, y: 50 }, { x: -50, y: 50 }];
+    this._shape = [{ x: -50, y: -50 }, { x: 0, y: -75 }, { x: 50, y: -50 }, { x: 50, y: 50 }, { x: -50, y: 50 }];
 
     this._moveSpeed = 0;
     this._dashSpeed = 0;
@@ -27,45 +29,15 @@ class PlayerModel {
     Emitter.mixin(this, this._emitter);
   }
 
-  // -- public
+  // -- model
 
-  center () {
-    return Promise.resolve();
+  _init (timestamp) {
+    this._log = Time.throttleAF(() => {
+      console.log('player view render', this._pos);
+    }, 5000);
   }
 
-  setDirection (x, y) {
-    this._moving = null;
-    if (x || y) {
-      this._moving = true;
-      this._stopping = null;
-    }
-    const oldDir = this._dir;
-    this._dir = Math.atan2(y, x);
-    const diff = Geometry.radiansDelta(this._dir, oldDir);
-
-    if (Math.abs(diff) > Math.PI / 2) {
-      this._moveSpeed = 0;
-    }
-  }
-
-  stop () {
-    this._moving = false;
-    this._stopping = true;
-  }
-
-  startDash () {
-    this._dashing = true;
-    this._slowing = false;
-  }
-
-  stopDash () {
-    this._dashing = false;
-    this._slowing = true;
-  }
-
-  // -- AppObject API
-
-  update (delta, timestamp) {
+  _update (delta, timestamp) {
     const dir = Geometry.radiansToVector(this._dir);
 
     // if (!this._generateN) {
@@ -120,10 +92,62 @@ class PlayerModel {
     if (this._speed && (dir.x || dir.y)) {
       this._emitter.emit('move', this);
     }
+
+    if (this._speed && this._facing !== this._dir) {
+      let diff = this._dir - this._facing;
+      if (Math.abs(diff) > Math.PI) {
+        this._facing += Math.sign(diff) * Math.PI * 2;
+        diff = this._dir - this._facing;
+      }
+      if (Math.abs(diff) < 0.2) {
+        this._facing = this._dir;
+      } else {
+        this._facing += (diff) * 0.1;
+      }
+    }
+
+    this._log(delta, timestamp, this._facing);
   }
 
   _destroy () {
     this._emitter.destroy();
+  }
+
+  // -- api
+
+  center () {
+    return Promise.resolve();
+  }
+
+  setDirection (x, y) {
+    this._moving = null;
+    if (x || y) {
+      this._moving = true;
+      this._stopping = null;
+    }
+    const oldDir = this._dir;
+    this._dir = Math.atan2(y, x);
+
+    const diff = Geometry.radiansDelta(this._dir, oldDir);
+
+    if (Math.abs(diff) > Math.PI / 2) {
+      this._moveSpeed = 0;
+    }
+  }
+
+  stop () {
+    this._moving = false;
+    this._stopping = true;
+  }
+
+  startDash () {
+    this._dashing = true;
+    this._slowing = false;
+  }
+
+  stopDash () {
+    this._dashing = false;
+    this._slowing = true;
   }
 }
 

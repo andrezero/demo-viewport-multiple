@@ -1,9 +1,15 @@
-import { Geometry } from '@picabia/picabia';
+import { Model, Geometry } from '@picabia/picabia';
 
-class GridModel {
+class GridModel extends Model {
   constructor () {
+    super();
+
     this._points = [];
   }
+
+  // -- model
+
+  // -- api
 
   setPoints (center, shape) {
     let rect = Geometry.getAABBRect(shape);
@@ -19,10 +25,6 @@ class GridModel {
         this._points.push({ x: ix, y: iy });
       }
     }
-  }
-
-  _destroy () {
-
   }
 }
 

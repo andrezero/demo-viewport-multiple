@@ -22,7 +22,7 @@ class GameView {
 
       this._player.on('move', () => {
         this._viewport.setPos({ x: this._player._pos.x, y: this._player._pos.y });
-        this._viewport.setZoom(1 - this._player._speed / 10);
+        this._viewport.setZoom(1 - this._player._speed / 2);
       });
     });
 
@@ -36,10 +36,10 @@ class GameView {
     this._bgLayer.clear();
     this._layer.clear();
 
-    if (!this._rotate) {
-      this._rotate = Wave.sine(timestamp, 0, Math.PI / 16);
+    if (!this._generateAngles) {
+      this._generateAngles = Wave.cosine(timestamp, 0, Math.PI / 64, 5000);
     }
-    this._viewport.setAngle(this._rotate(timestamp));
+    this._viewport.setAngle(this._generateAngles(timestamp));
 
     this._layer.setStrokeStyle('rgba(0,0,0,1)');
     this._layer.setStrokeWidth(50);

@@ -1,16 +1,18 @@
-import { Emitter, Node } from '@picabia/picabia';
+import { Model, Emitter } from '@picabia/picabia';
 import { PlayerModel } from './player.js';
 import { GridModel } from './grid.js';
 
-class GameModel {
+class GameModel extends Model {
   constructor () {
-    Node.mixin(this);
+    super();
 
     this._emitter = new Emitter();
     Emitter.mixin(this, this._emitter);
   }
 
-  start () {
+  // -- model
+
+  _init () {
     this._player = new PlayerModel();
     this._addChild(this._player);
     this._emitter.emit('new-player', this._player);
@@ -23,6 +25,8 @@ class GameModel {
   _destroy () {
     this._emitter.destroy();
   }
+
+  // -- api
 }
 
 export {
