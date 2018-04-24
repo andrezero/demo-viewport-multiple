@@ -1,4 +1,7 @@
+import { Wave } from '@picabia/picabia';
+
 import { PlayerView } from './player';
+import { GridView } from './grid';
 
 class GameView {
   constructor (model, canvas, viewport) {
@@ -6,36 +9,45 @@ class GameView {
     this._canvas = canvas;
     this._viewport = viewport;
 
-    this._bgLayer = this._canvas.newLayer('bg', null, null, null, this._viewport);
-    this._bgCtx = this._bgLayer.ctx;
-
-    this._layer = this._canvas.newLayer('scene', null, null, null, this._viewport);
-    this._layer.addView(this);
+    this._bgLayer = this._canvas.addLayer('bg', null, null, null, this._viewport);
+    this._layer = this._canvas.addLayer('scene', null, null, null, this._viewport);
+    this._canvas.addView(this);
 
     this._pos = [];
 
-    this._handleNewPlayer = (player) => {
-      this._playerView = new PlayerView(player, this._layer);
+    this._model.on('new-player', (player) => {
+      this._player = player;
+      this._playerView = new PlayerView(player);
       this._layer.addView(this._playerView);
-    };
 
-    this._model.on('new-player', this._handleNewPlayer);
+      this._player.on('move', () => {
+        this._viewport.setPos({ x: this._player._pos.x, y: this._player._pos.y });
+        this._viewport.setZoom(1 - this._player._speed / 10);
+      });
+    });
+
+    this._model.on('new-grid', (grid) => {
+      this._gridView = new GridView(grid, viewport);
+      this._bgLayer.addView(this._gridView);
+    });
   }
 
-  render (layer, delta, timestamp) {
+  render (delta, timestamp) {
+    this._bgLayer.clear();
     this._layer.clear();
 
-    this._viewport.setPos({ x: this._viewport._pos.x - 1, y: this._viewport._pos.y - 1 });
-    this._viewport.setAngle(this._viewport._angle + 0.005);
-    this._viewport.setZoom(this._viewport._zoom + 0.01);
+    if (!this._rotate) {
+      this._rotate = Wave.sine(timestamp, 0, Math.PI / 16);
+    }
+    this._viewport.setAngle(this._rotate(timestamp));
 
-    layer.setStrokeStyle('rgba(0,0,0,1)');
-    layer.setStrokeWidth(50);
-    layer.beginPath();
+    this._layer.setStrokeStyle('rgba(0,0,0,1)');
+    this._layer.setStrokeWidth(50);
+    this._layer.beginPath();
     const shape = this._viewport.getShape();
-    shape.forEach(vector => layer.lineTo(vector.x, vector.y));
-    layer.lineTo(shape[0].x, shape[0].y);
-    layer.stroke();
+    shape.forEach(vector => this._layer.lineTo(vector.x, vector.y));
+    this._layer.lineTo(shape[0].x, shape[0].y);
+    this._layer.stroke();
   }
 }
 

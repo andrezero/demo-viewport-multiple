@@ -17,9 +17,8 @@ class Application {
     // -- view
 
     const canvasOptions = {
-      mode: 'contain',
+      mode: 'cover',
       ratio: 1,
-      scaleAxis: 'width',
       maxPixels: 1000 * 1000
     };
     this._canvas = new Canvas(this._container, canvasOptions);
@@ -27,14 +26,13 @@ class Application {
     this._viewport = new Viewport();
     this._view = new GameView(this._model, this._canvas, this._viewport);
 
-    this._viewport.setScale(0.5);
-    this._viewport.setZoom(2);
+    this._viewport.setScale(1);
+    this._viewport.setZoom(1);
     this._viewport.setPos({ x: 100, y: 100 });
-    this._viewport.setAngle(Math.PI / 4);
+    // this._viewport.setAngle(Math.PI / 4);
 
     this._canvas.on('resize', () => {
       this._viewport.setSize({ w: this._canvas.width, h: this._canvas.height });
-      // this._viewport.setScale(this._canvas.height / 1000);
     });
 
     // -- input

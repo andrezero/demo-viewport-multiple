@@ -222,11 +222,7 @@ button[disabled] {
   text-align: center;
 }
 
-
-
-
-
-.x-canvas-layer[data-x-layer="scene"] {
+.x-canvas-size {
   background: rgba(0,255,255,0.3);
 }
 
