@@ -10,7 +10,6 @@ class Application {
     // -- model
 
     this._model = new GameModel();
-    this._player = null;
 
     // -- view
 
@@ -50,22 +49,7 @@ class Application {
       'shift': 'start'
     }, 'stop');
 
-    this._model.on('new-player', (player) => (this._player = player));
-
-    // @todo send all to game
-    // this._keyboard.on('control', (control) => this._model.input(control));
-    this._keyboard.on('move:up', () => this._player.setDirection(0, -1));
-    this._keyboard.on('move:down', () => this._player.setDirection(0, 1));
-    this._keyboard.on('move:left', () => this._player.setDirection(-1, 0));
-    this._keyboard.on('move:right', () => this._player.setDirection(1, 0));
-    this._keyboard.on('move:up+left', () => this._player.setDirection(-1, -1));
-    this._keyboard.on('move:up+right', () => this._player.setDirection(1, -1));
-    this._keyboard.on('move:down+left', () => this._player.setDirection(-1, 1));
-    this._keyboard.on('move:down+right', () => this._player.setDirection(1, 1));
-    this._keyboard.on('move:center', () => this._player.stop());
-
-    this._keyboard.on('dash:start', () => this._player.startDash());
-    this._keyboard.on('dash:stop', () => this._player.stopDash());
+    this._keyboard.on('control', (control) => this._model.input(control));
 
     // -- start
 
