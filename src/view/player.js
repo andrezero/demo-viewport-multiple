@@ -1,28 +1,30 @@
-import { Geometry } from '@picabia/picabia';
+import { View, Geometry } from '@picabia/picabia';
 
-class PlayerView {
-  constructor (player) {
-    this._player = player;
+class PlayerView extends View {
+  _constructor (model) {
+    this._model = model;
   }
 
-  // -- public
+  // -- view
 
-  render (layer, delta, timestamp) {
+  render (delta, timestamp) {
     const red = 100;
     const green = 10;
     const blue = 10;
     const alpha = 1;
     const rgba = 'rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ')';
 
-    const polygon = this._player._shape
-      .map((vector) => ({ x: vector.x + this._player._pos.x, y: vector.y + this._player._pos.y }))
-      .map(vector => Geometry.rotateVector(vector, -this._player._facing - Math.PI / 2, this._player._pos));
+    const polygon = this._model._shape
+      .map((vector) => ({ x: vector.x + this._model._pos.x, y: vector.y + this._model._pos.y }))
+      .map(vector => Geometry.rotateVector(vector, -this._model._facing - Math.PI / 2, this._model._pos));
 
-    layer.setFillStyle(rgba);
-    layer.beginPath();
-    polygon.forEach(vector => layer.lineTo(vector.x, vector.y));
-    layer.lineTo(polygon[0].x, polygon[0].y);
-    layer.fill();
+    const renderer = this._renderer;
+
+    renderer.setFillStyle(rgba);
+    renderer.beginPath();
+    polygon.forEach(vector => renderer.lineTo(vector.x, vector.y));
+    renderer.lineTo(polygon[0].x, polygon[0].y);
+    renderer.fill();
   }
 }
 

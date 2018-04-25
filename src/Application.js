@@ -1,11 +1,11 @@
-import { Canvas, Frame, Node, Viewport, KeyboardInput } from '@picabia/picabia';
+import { Container, Frame, ViewManager, Viewport, KeyboardInput } from '@picabia/picabia';
 
 import { GameModel } from './model/game';
 import { GameView } from './view/game';
 
 class Application {
-  constructor (container) {
-    this._container = container;
+  constructor (dom) {
+    this._dom = dom;
 
     // -- model
 
@@ -13,24 +13,27 @@ class Application {
 
     // -- view
 
-    const canvasOptions = {
+    const containerOptions = {
       mode: 'cover',
       ratio: 1,
       maxPixels: 1000 * 1000
     };
-    this._canvas = new Canvas(this._container, canvasOptions);
+    this._container = new Container('main', this._dom, containerOptions);
 
-    this._viewport = new Viewport();
-    this._view = new GameView(this._model, this._canvas, this._viewport);
+    this._vm = new ViewManager();
+    this._vm.addContainer(this._container);
 
-    this._viewport.setScale(1);
-    this._viewport.setZoom(1);
-    this._viewport.setPos({ x: 100, y: 100 });
+    const viewportOptions = {
+      pos: { x: 100, y: 100 }
+    };
+    this._viewport = new Viewport('camera', viewportOptions);
+
+    this._container.on('resize', () => this._viewport.setSize(this._container.size));
+    this._vm.addViewport(this._viewport);
+
+    this._view = this._vm.createView(GameView, [this._model]);
+
     // this._viewport.setAngle(Math.PI / 4);
-
-    this._canvas.on('resize', () => {
-      this._viewport.setSize({ w: this._canvas.width, h: this._canvas.height });
-    });
 
     // -- input
 
@@ -63,12 +66,12 @@ class Application {
     };
     this._frame = new Frame(frameOptions);
     this._frame.on('update', (delta, timestamp) => this._model.update(delta, timestamp));
-    this._frame.on('update', (delta, timestamp) => this._canvas.render(delta, timestamp));
+    this._frame.on('render', (delta, timestamp) => this._vm.render(delta, timestamp));
     this._frame.start();
   }
 
   resize () {
-    this._canvas.resize();
+    this._container.resize();
   }
 }
 

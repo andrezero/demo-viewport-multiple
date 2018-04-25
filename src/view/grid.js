@@ -1,32 +1,33 @@
-import { Time } from '@picabia/picabia';
+import { View, Time } from '@picabia/picabia';
 
-class GridView {
-  constructor (grid, viewport) {
-    this._grid = grid;
-    this._viewport = viewport;
+class GridView extends View {
+  _constructor (model) {
+    this._model = model;
 
-    this._grid.setPoints(this._viewport._pos, this._viewport.getShape());
+    this._model.setPoints(this._viewport._pos, this._viewport.getShape());
 
     this._viewport.on('change', Time.throttle(() => {
-      this._grid.setPoints(this._viewport._pos, this._viewport.getShape());
+      this._model.setPoints(this._viewport._pos, this._viewport.getShape());
     }, 100));
   }
 
-  // -- public
+  // -- view
 
-  render (layer, delta, timestamp) {
-    const points = this._grid._points;
+  render (delta, timestamp) {
+    const points = this._model._points;
 
-    layer.setStrokeWidth(1);
-    layer.setFillStyle('rgba(1, 1, 1, 1)');
+    const renderer = this._renderer;
+
+    renderer.setStrokeWidth(1);
+    renderer.setFillStyle('rgba(1, 1, 1, 1)');
     points.forEach(point => {
-      layer.beginPath();
-      layer.moveTo(point.x - 5, point.y);
-      layer.lineTo(point.x + 5, point.y);
-      layer.stroke();
-      layer.moveTo(point.x, point.y + 5);
-      layer.lineTo(point.x, point.y - 5);
-      layer.stroke();
+      renderer.beginPath();
+      renderer.moveTo(point.x - 5, point.y);
+      renderer.lineTo(point.x + 5, point.y);
+      renderer.stroke();
+      renderer.moveTo(point.x, point.y + 5);
+      renderer.lineTo(point.x, point.y - 5);
+      renderer.stroke();
     });
   }
 }
