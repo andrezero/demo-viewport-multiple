@@ -28,12 +28,10 @@ class Application {
     };
     this._viewport = new Viewport('camera', viewportOptions);
 
-    this._container.on('resize', () => this._viewport.setSize(this._container.size));
+    this._container.on('resize', (size) => this._viewport.setSize(size));
     this._vm.addViewport(this._viewport);
 
     this._view = this._vm.createView(GameView, [this._model]);
-
-    // this._viewport.setAngle(Math.PI / 4);
 
     // -- input
 
