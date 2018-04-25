@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "description": "Picabia Demo: Viewport Scaling",
   "license": "MIT",
-  "homepage": "https://github.com/andrezero/@picabia/demo-viewport-scaling",
+  "homepage": "https://github.com/picabia/demo-viewport-scaling",
   "author": "Andre Torgal <andre.torgal@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/andrezero/@picabia/demo-viewport-scaling.git"
+    "url": "https://github.com/picabia/demo-viewport-scaling.git"
   },
   "scripts": {
     "dev": "webpack-dev-server --config webpack.dev.js",
@@ -18,7 +18,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@picabia/picabia": "^0.2.0"
+    "@picabia/picabia": "^0.3.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
