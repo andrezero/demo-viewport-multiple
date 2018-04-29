@@ -1,14 +1,9 @@
-import { View, Wave } from '@picabia/picabia';
+import { View } from '@picabia/picabia';
 
 class BackgroundView extends View {
   // -- view
 
   render (delta, timestamp) {
-    if (!this._generateAngles) {
-      this._generateAngles = Wave.cosine(timestamp, 0, Math.PI / 64, 5000);
-    }
-    this._viewport.setAngle(this._generateAngles(timestamp));
-
     const renderer = this._renderer;
 
     renderer.setStrokeStyle('rgba(0,0,0,1)');

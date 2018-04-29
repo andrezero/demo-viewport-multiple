@@ -15,8 +15,8 @@ class Application {
 
     const containerOptions = {
       mode: 'cover',
-      ratio: 1,
-      maxPixels: 1000 * 1000
+      ratio: 4 / 3,
+      maxPixels: 1500 * 1500
     };
     this._container = new Container('main', this._dom, containerOptions);
 
@@ -24,12 +24,21 @@ class Application {
     this._vm.addContainer(this._container);
 
     const viewportOptions = {
-      pos: { x: 100, y: 100 }
+      pos: { x: 0, y: 0 }
     };
-    this._viewport = new Viewport('camera', viewportOptions);
+    this._viewports = [];
+    this._viewports.push(new Viewport('camera-bg', viewportOptions));
+    this._viewports.push(new Viewport('camera-scene-1', viewportOptions));
+    this._viewports.push(new Viewport('camera-transitions', viewportOptions));
+    this._viewports.push(new Viewport('camera-scene-2', viewportOptions));
+    this._viewports.forEach((viewport) => this._vm.addViewport(viewport));
 
-    this._container.on('resize', (size) => this._viewport.setSize(size));
-    this._vm.addViewport(this._viewport);
+    this._container.on('resize', (size) => {
+      this._viewports.forEach((viewport, index) => {
+        viewport.setSize(size);
+        viewport.setScale((1 + index * 0.25) * size.h / 1000);
+      });
+    });
 
     this._view = this._vm.createView(GameView, [this._model]);
 
@@ -37,18 +46,19 @@ class Application {
 
     this._keyboard = new KeyboardInput();
     this._keyboard.addGroup('move', {
-      w: 'up',
-      s: 'down',
       a: 'left',
-      d: 'right',
-      'a+w': 'up+left',
-      'd+w': 'up+right',
-      'a+s': 'down+left',
-      'd+s': 'down+right'
+      d: 'right'
     }, 'center');
     this._keyboard.addGroup('dash', {
       'shift': 'start'
     }, 'stop');
+    this._keyboard.addGroup('jump', {
+      'space': 'start'
+    }, 'stop');
+    this._keyboard.addGroup('thrust', {
+      w: 'up',
+      s: 'down'
+    }, 'center');
 
     this._keyboard.on('control', (control) => this._model.input(control));
 

@@ -1,6 +1,6 @@
 import { View, Shape } from '@picabia/picabia';
 
-class PlayerView extends View {
+class PlatformView extends View {
   _constructor (model) {
     this._model = model;
   }
@@ -8,9 +8,9 @@ class PlayerView extends View {
   // -- view
 
   render (delta, timestamp) {
-    const red = 100;
+    const red = 10;
     const green = 10;
-    const blue = 10;
+    const blue = this._model._layer === 1 ? 100 : 200;
     const alpha = 1;
     const rgba = 'rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ')';
 
@@ -27,5 +27,5 @@ class PlayerView extends View {
 }
 
 export {
-  PlayerView
+  PlatformView
 };

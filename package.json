@@ -1,29 +1,35 @@
 {
-  "name": "@picabia/demo-viewport-scaling",
+  "name": "@picabia/demo-viewport-multiple",
   "version": "0.1.0",
-  "description": "Picabia Demo: Viewport Scaling",
+  "description": "Picabia Demo: Multiple Viewports",
   "license": "MIT",
-  "homepage": "https://github.com/andrezero/@picabia/demo-viewport-scaling",
+  "homepage": "https://github.com/picabia/demo-viewport-multiple",
   "author": "Andre Torgal <andre.torgal@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/andrezero/@picabia/demo-viewport-scaling.git"
+    "url": "https://github.com/picabia/demo-viewport-multiple.git"
   },
   "scripts": {
     "dev": "webpack-dev-server --config webpack.dev.js",
+    "test": "nyc _mocha --require esm --recursive test/",
+    "coverage": "http-server coverage/",
+    "lint": "eslint src/ test/",
+    "lint-fix": "eslint --fix src/ test/",
     "build": "webpack --config webpack.prod.js",
-    "start": "webpack --config webpack.prod.js && node ./bin/www",
-    "lint": "eslint src/ lib/",
-    "lint-fix": "eslint --fix src/ lib/",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack --config webpack.prod.js && node ./bin/www"
+  },
+  "esm": {
+    "cjs": true
   },
   "dependencies": {
-    "@picabia/picabia": "^0.2.0"
+    "esm": "^3.0.28",
+    "@picabia/picabia": "^0.4.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-minify-webpack-plugin": "^0.2.0",
+    "chai": "^4.1.2",
     "clean-webpack-plugin": "^0.1.18",
     "copy-webpack-plugin": "^4.3.1",
     "css-loader": "^0.28.9",
@@ -38,6 +44,9 @@
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
-    "webpack-dev-server": "^2.9.3"
+    "webpack-dev-server": "^2.9.3",
+    "http-server": "^0.11.1",
+    "mocha": "^5.1.1",
+    "nyc": "^11.7.1"
   }
 }

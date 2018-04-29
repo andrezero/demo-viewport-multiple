@@ -1,36 +1,66 @@
-import { View, CanvasLayer2d, CanvasRenderer2d } from '@picabia/picabia';
+import { View, CanvasLayer2d, CanvasRenderer2d, Wave } from '@picabia/picabia';
 
 import { BackgroundView } from './background';
 import { PlayerView } from './player';
+import { PlatformView } from './platform';
 import { GridView } from './grid';
 
 class GameView extends View {
   _constructor (model) {
     this._model = model;
-    this._viewport = this._vm.getViewport('camera');
+    this._cameras = this._vm.getViewports();
     this._vm.addRenderer(new CanvasRenderer2d('2d'));
 
-    this._bgLayer = new CanvasLayer2d('bg');
+    this._bgLayer = new CanvasLayer2d('layer-bg');
     this._vm.addLayer('main', this._bgLayer);
 
-    this._vm.createView(BackgroundView, [], '2d', 'bg', 'camera');
+    this._vm.createView(BackgroundView, [], '2d', 'layer-bg', 'camera-bg');
 
-    this._sceneLayer = new CanvasLayer2d('scene');
-    this._vm.addLayer('main', this._sceneLayer);
+    this._sceneLayers = [];
+    this._sceneLayers.push(new CanvasLayer2d('layer-scene-1'));
+    this._sceneLayers.push(new CanvasLayer2d('layer-scene-2'));
+    this._sceneLayers.forEach((layer) => this._vm.addLayer('main', layer));
 
     this._model.on('new-player', (player) => {
       this._player = player;
-      this._playerView = this._vm.createView(PlayerView, [player], '2d', 'scene', 'camera');
+      this._playerView = this._vm.createView(PlayerView, [player], '2d', 'layer-scene-2', 'camera-scene-2');
+      this._cameras.forEach((viewport) => viewport.setPos({ x: this._player._pos.x, y: this._player._pos.y - 100 }));
 
       this._player.on('move', () => {
-        this._viewport.setPos({ x: this._player._pos.x, y: this._player._pos.y });
-        this._viewport.setZoom(1 - this._player._speed / 2);
+        this._cameras.forEach((viewport) => {
+          viewport.setPos({ x: this._player._pos.x, y: this._player._pos.y - 100 });
+          viewport.setZoom(1 - this._player._speed.h / 2);
+        });
+        if (this._platformGenerator) {
+          this._platformGenerator.generate(this._cameras[0].getShape());
+        };
       });
     });
 
-    this._model.on('new-grid', (grid) => {
-      this._vm.createView(GridView, [grid], '2d', 'bg', 'camera');
+    this._model.on('new-platform-generator', (platformGenerator) => {
+      this._platformGenerator = platformGenerator;
+      this._platformGenerator.generate(this._cameras[0].getShape());
     });
+
+    this._model.on('new-platform', (platform) => {
+      this._platform = platform;
+      const layer = 'layer-scene-' + platform.layer;
+      const camera = 'camera-scene-' + platform.layer;
+      this._platformView = this._vm.createView(PlatformView, [platform], '2d', layer, camera);
+    });
+
+    this._model.on('new-grid', (grid) => {
+      this._vm.createView(GridView, [grid], '2d', 'layer-bg', 'camera-bg');
+    });
+  }
+
+  render (delta, timestamp) {
+    if (!this._wave) {
+      this._wave = Wave.sine(timestamp, 0, Math.PI / 4, 5000);
+    }
+
+    const oscillatingNumber = this._wave(timestamp);
+    this._cameras.forEach(viewport => viewport.setAngle(oscillatingNumber));
   }
 }
 
