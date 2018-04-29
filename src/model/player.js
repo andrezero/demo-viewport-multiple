@@ -115,10 +115,6 @@ class PlayerModel extends Model {
 
   // -- api
 
-  center () {
-    return Promise.resolve();
-  }
-
   setDirection (x, y) {
     this._moving = null;
     if (x || y) {
