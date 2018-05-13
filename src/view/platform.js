@@ -1,20 +1,20 @@
 import { View, Shape } from '@picabia/picabia';
 
 class PlatformView extends View {
-  _constructor (model) {
-    this._model = model;
+  _constructor (platform) {
+    this._platform = platform;
   }
 
   // -- view
 
-  render (delta, timestamp) {
+  _render (delta, timestamp) {
     const red = 10;
     const green = 10;
-    const blue = this._model._layer === 1 ? 100 : 200;
+    const blue = this._platform._layer === 1 ? 100 : 200;
     const alpha = 1;
     const rgba = 'rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ')';
 
-    const points = Shape.getPoints(this._model.shape);
+    const points = Shape.getPoints(this._platform.shape);
 
     const renderer = this._renderer;
 

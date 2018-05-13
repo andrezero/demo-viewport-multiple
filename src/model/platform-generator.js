@@ -7,15 +7,14 @@ class PlatformGeneratorModel extends Model {
     super();
 
     this._numLayers = 2;
-    this._batchSize = 50;
+    this._batchSize = 5;
     this._minX = 0;
     this._maxX = 0;
     this._platforms = [];
     this._platformHeight = 30;
 
-    this._y = -500;
-    this._height = 1000;
-    this._distance = 1;
+    this._height = 100;
+    this._distance = 500;
     this._minWidth = 300;
     this._maxWidth = 400;
 
@@ -25,31 +24,39 @@ class PlatformGeneratorModel extends Model {
     Emitter.mixin(this, this._emitter);
   }
 
-  _generatePlatform (x) {
-    const layer = Math.floor(Math.random() * this._numLayers) + 1;
-    const y = this._y + Math.floor(Math.random() * this._height);
+  _generatePlatform (previousPos, vector, layer) {
+    layer = layer || Math.floor(Math.random() * this._numLayers) + 1;
+    const x = previousPos.x + vector.x;
+    const y = previousPos.y + vector.y + Math.floor(Math.random() * this._height - this._height / 2);
     const w = Math.floor(Math.random() * (this._maxWidth - this._minWidth)) + this._minWidth;
     const h = this._platformHeight;
 
     const platform = new PlatformModel(layer, {x, y}, {w, h});
-    this._platforms.push(platform);
     this._addChild(platform);
     this._emitter.emit('new-platform', platform);
+    return platform;
   }
 
   _generateRight () {
-    this._generatePlatform(0);
-    for (var ix = this._maxX; ix < this._maxX + this._batchSize; ix += this._distance) {
-      this._generatePlatform(ix);
+    let platform;
+    for (var ix = this._maxX; ix < this._maxX + this._batchSize; ix++) {
+      const pos = this._platforms[this._platforms.length - 1]._pos;
+      const vector = {x: this._distance, y: 0};
+      platform = this._generatePlatform(pos, vector);
+      this._platforms.push(platform);
     }
-    this._maxX += this._batchSize;
+    this._maxX = platform._pos.x;
   }
 
   _generateLeft () {
-    for (var ix = this._minX; ix > this._minX - this._batchSize; ix -= this._distance) {
-      this._generatePlatform(ix);
+    let platform;
+    for (var ix = this._minX; ix > this._minX - this._batchSize; ix--) {
+      const pos = this._platforms[0]._pos;
+      const vector = {x: -this._distance, y: 0};
+      platform = this._generatePlatform(pos, vector);
+      this._platforms.unshift(platform);
     }
-    this._minX -= this._batchSize;
+    this._minX = platform._pos.x;
   }
 
   // -- model
@@ -65,21 +72,23 @@ class PlatformGeneratorModel extends Model {
   // -- api
 
   generate (viewportShape) {
-    if (this._platforms.length) {
-      return;
-    }
     const rect = Geometry.getAABBRect(viewportShape);
     rect[0] -= this._viewportThreshold;
     rect[2] += this._viewportThreshold * 2;
+    if (!this._platforms.length) {
+      const pos = { x: rect[0] + rect[2] / 2, y: rect[1] + rect[3] / 2 };
+      const platform = this._generatePlatform(pos, { x: 0, y: 1000 }, 2);
+      this._platforms.push(platform);
+      return;
+    }
     const generateRight = rect[0] + rect[2] >= this._maxX;
-    // const generateLeft = rect[0] <= this._minX;
     if (generateRight) {
       this._generateRight(rect[1], rect[3]);
     }
-    // if (generateLeft) {
-    //   this._generateLeft(rect[1], rect[3]);
-    // }
-    console.log('generate', this._platforms.length);
+    const generateLeft = rect[0] <= this._minX;
+    if (generateLeft) {
+      this._generateLeft(rect[1], rect[3]);
+    }
   }
 }
 

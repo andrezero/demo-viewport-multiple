@@ -1,20 +1,20 @@
 import { View, Time } from '@picabia/picabia';
 
 class GridView extends View {
-  _constructor (model) {
-    this._model = model;
+  _constructor (grid) {
+    this._grid = grid;
 
-    this._model.setPoints(this._viewport._pos, this._viewport.getShape());
+    this._grid.setPoints(this._viewport._pos, this._viewport.getShape());
 
     this._viewport.on('change', Time.throttle(() => {
-      this._model.setPoints(this._viewport._pos, this._viewport.getShape());
+      this._grid.setPoints(this._viewport._pos, this._viewport.getShape());
     }, 100));
   }
 
   // -- view
 
-  render (delta, timestamp) {
-    const points = this._model._points;
+  _render (delta, timestamp) {
+    const points = this._grid._points;
 
     const renderer = this._renderer;
 

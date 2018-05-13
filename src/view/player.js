@@ -1,20 +1,20 @@
 import { View, Shape } from '@picabia/picabia';
 
 class PlayerView extends View {
-  _constructor (model) {
-    this._model = model;
+  _constructor (player) {
+    this._player = player;
   }
 
   // -- view
 
-  render (delta, timestamp) {
+  _render (delta, timestamp) {
     const red = 100;
     const green = 10;
     const blue = 10;
     const alpha = 1;
     const rgba = 'rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ')';
 
-    const points = Shape.getPoints(this._model.shape);
+    const points = Shape.getPoints(this._player.shape);
 
     const renderer = this._renderer;
 

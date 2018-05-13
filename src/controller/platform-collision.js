@@ -15,7 +15,9 @@ class PlatformCollision extends Model {
     this._platforms.forEach((platform) => {
       const intersections = Intersection.between(platform.segment, obj.shape);
       if (intersections.length) {
-        obj.setGround(platform);
+        if (!obj.ground) {
+          obj.setGround(platform);
+        }
       }
     });
   }

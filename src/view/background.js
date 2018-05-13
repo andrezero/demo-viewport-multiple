@@ -3,7 +3,7 @@ import { View } from '@picabia/picabia';
 class BackgroundView extends View {
   // -- view
 
-  render (delta, timestamp) {
+  _render (delta, timestamp) {
     const renderer = this._renderer;
 
     renderer.setStrokeStyle('rgba(0,0,0,1)');
