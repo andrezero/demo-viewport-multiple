@@ -40,10 +40,6 @@ class PlatformModel extends Model {
 
   // -- model
 
-  _update (delta, timestamp) {
-
-  }
-
   _destroy () {
     this._emitter.destroy();
   }

@@ -39,7 +39,7 @@ class PlatformGeneratorModel extends Model {
 
   _generateRight () {
     let platform;
-    for (var ix = this._maxX; ix < this._maxX + this._batchSize; ix++) {
+    for (let ix = this._maxX; ix < this._maxX + this._batchSize; ix++) {
       const pos = this._platforms[this._platforms.length - 1]._pos;
       const vector = {x: this._distance, y: 0};
       platform = this._generatePlatform(pos, vector);
@@ -50,7 +50,7 @@ class PlatformGeneratorModel extends Model {
 
   _generateLeft () {
     let platform;
-    for (var ix = this._minX; ix > this._minX - this._batchSize; ix--) {
+    for (let ix = this._minX; ix > this._minX - this._batchSize; ix--) {
       const pos = this._platforms[0]._pos;
       const vector = {x: -this._distance, y: 0};
       platform = this._generatePlatform(pos, vector);
@@ -60,10 +60,6 @@ class PlatformGeneratorModel extends Model {
   }
 
   // -- model
-
-  _update (delta, timestamp) {
-
-  }
 
   _destroy () {
     this._emitter.destroy();

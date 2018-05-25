@@ -24,7 +24,7 @@ class PlatformCollision extends Model {
 
   // -- model
 
-  _update (delta, timestamp) {
+  _preUpdate () {
     this._objects.forEach((obj) => {
       if (!obj.ground && obj.falling) {
         this._checkObj(obj);

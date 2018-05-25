@@ -1,13 +1,15 @@
 import { View, Shape } from '@picabia/picabia';
 
 class PlayerView extends View {
-  _constructor (player) {
+  constructor (v, target, player) {
+    super(v, target);
+
     this._player = player;
   }
 
   // -- view
 
-  _render (delta, timestamp) {
+  render (renderer) {
     const red = 100;
     const green = 10;
     const blue = 10;
@@ -15,8 +17,6 @@ class PlayerView extends View {
     const rgba = 'rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ')';
 
     const points = Shape.getPoints(this._player.shape);
-
-    const renderer = this._renderer;
 
     renderer.setFillStyle(rgba);
     renderer.beginPath();

@@ -22,8 +22,9 @@
     "cjs": true
   },
   "dependencies": {
-    "@picabia/picabia": "^0.6.0",
-    "esm": "^3.0.28"
+    "esm": "^3.0.28",
+    "@picabia/picabia": "^0.9.0",
+    "@picabia/component-fps": "^0.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

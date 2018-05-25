@@ -65,16 +65,18 @@ class PlayerModel extends Model {
 
   // -- model
 
-  _init (timestamp) {
-    this._log = Time.throttleAF(() => {
+  _init () {
+    this._log = Time.throttle(() => {
       console.log('player view render', this);
     }, 5000);
   }
 
-  _update (delta, timestamp) {
+  _preUpdate () {
+    const time = this._time;
+
     if (this._ground) {
       if (this._moving) {
-        this._moveSpeed += delta * MOVE_INCREMENT;
+        this._moveSpeed += time.d * MOVE_INCREMENT;
         if (this._moveSpeed >= MAX_MOVE_SPEED) {
           this._moveSpeed = MAX_MOVE_SPEED;
           this._moving = false;
@@ -82,7 +84,7 @@ class PlayerModel extends Model {
       }
 
       if (this._dashing && this._moveSpeed >= MAX_MOVE_SPEED) {
-        this._dashSpeed += delta * DASH_INCREMENT;
+        this._dashSpeed += time.d * DASH_INCREMENT;
         if (this._dashSpeed >= MAX_DASH_SPEED) {
           this._dashSpeed = MAX_DASH_SPEED;
           this._dashing = false;
@@ -91,7 +93,7 @@ class PlayerModel extends Model {
     }
 
     if (this._ground && this._stopping) {
-      this._moveSpeed -= delta * STOP_INCREMENT;
+      this._moveSpeed -= time.d * STOP_INCREMENT;
       if (this._moveSpeed <= 0) {
         this._moveSpeed = 0;
         if (this._dashSpeed <= 0) {
@@ -101,7 +103,7 @@ class PlayerModel extends Model {
     }
 
     if (this._ground && (this._slowing || this._stopping)) {
-      this._dashSpeed -= delta * SLOW_INCREMENT;
+      this._dashSpeed -= time.d * SLOW_INCREMENT;
       if (this._dashSpeed <= 0) {
         this._dashSpeed = 0;
         this._slowing = false;
@@ -109,7 +111,7 @@ class PlayerModel extends Model {
     }
 
     if (!this._ground) {
-      this._fallSpeed += delta * FALL_INCREMENT;
+      this._fallSpeed += time.d * FALL_INCREMENT;
       if (this._fallSpeed > MAX_FALL_SPEED) {
         this._fallSpeed = MAX_FALL_SPEED;
       }
@@ -124,10 +126,10 @@ class PlayerModel extends Model {
     const angle = Geometry.radiansToVector(this._angle);
 
     if (this._speed.h && angle.x) {
-      this._pos.x += angle.x * this._speed.h * delta;
+      this._pos.x += angle.x * this._speed.h * time.d;
     }
     if (this._speed.v && angle.y) {
-      this._pos.y += angle.y * this._speed.v * delta;
+      this._pos.y += angle.y * this._speed.v * time.d;
     }
 
     if ((this._speed.h || this._speed.v) && (angle.x || angle.y)) {
@@ -147,7 +149,7 @@ class PlayerModel extends Model {
       }
     }
 
-    this._log(delta, timestamp, this._facing);
+    this._log(time.d, time.t, this._facing);
   }
 
   _destroy () {
